@@ -3,6 +3,7 @@
 use std::collections::HashSet;
 use std::ops::{Index, IndexMut, Range, Sub};
 use std::convert::From;
+use std::cmp::PartialEq;
 
 fn main(){
     // print n!
@@ -93,8 +94,8 @@ where
         for e in self
             .sequence
             .iter()
-            .take(range.end - range.start)
             .skip(range.start)
+            .take(range.end - range.start)
         {
             set.insert(*e);
         }
@@ -175,5 +176,23 @@ where
             }
             Some(ans)
         }
+    }
+}
+
+impl<T> PartialEq<Set<T>> for Set<T> 
+where
+    T: Eq + std::hash::Hash
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.set == other.set
+    }
+}
+
+impl<T> PartialEq<SequencialSet<T>> for SequencialSet<T>
+where
+    T: Eq
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.sequence == other.sequence
     }
 }

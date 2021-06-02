@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use crate::set::Set;
+use std::cmp::PartialEq;
 use std::collections::HashSet;
 use std::ops::{Index, IndexMut, Range};
 
@@ -31,9 +32,9 @@ where
     }
 }
 
-impl<T> SequencialSet<T> 
+impl<T> SequencialSet<T>
 where
-    T: Clone
+    T: Clone,
 {
     pub fn to_vec(&self) -> Vec<T> {
         self.sequence.clone()
@@ -49,8 +50,8 @@ where
         for e in self
             .sequence
             .iter()
-            .take(range.end - range.start)
             .skip(range.start)
+            .take(range.end - range.start)
         {
             set.insert(*e);
         }
@@ -74,5 +75,45 @@ where
 impl<T> SequencialSet<T> {
     pub fn new(sequence: Vec<T>) -> Self {
         Self { sequence }
+    }
+}
+
+impl<T> PartialEq<SequencialSet<T>> for SequencialSet<T>
+where
+    T: Eq,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.sequence == other.sequence
+    }
+}
+
+#[cfg(test)]
+mod tests_sequence {
+    use crate::sequence::SequencialSet;
+    use crate::set::Set;
+    use std::collections::HashSet;
+
+    #[test]
+    fn for_sequence_new() {
+        let sequence1 = vec![1, 2, 3, 4, 6, 0];
+        let sequence2 = vec![2, 2, 3, 4, 6, 5];
+        let sequence1 = SequencialSet::new(sequence1);
+        let sequence2 = SequencialSet::new(sequence2);
+
+        assert_eq!(
+            sequence1.extract_with_range(0..4),
+            Set::new([1, 2, 3, 4].iter().cloned().collect())
+        );
+        assert_eq!(
+            sequence2.extract_with_range(4..6),
+            Set::new([6, 5].iter().cloned().collect())
+        );
+        assert_eq!(sequence1.extract(5), Some(0));
+        assert_eq!(sequence2.extract(5), Some(5));
+        assert_eq!(sequence2.extract(7), None);
+        assert_eq!(
+            sequence1.extract_with_range(7..8),
+            Set::new(HashSet::<usize>::new())
+        );
     }
 }

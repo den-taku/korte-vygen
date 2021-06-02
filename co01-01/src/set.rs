@@ -1,3 +1,4 @@
+use std::cmp::PartialEq;
 use std::collections::HashSet;
 use std::convert::From;
 use std::ops::Range;
@@ -56,5 +57,36 @@ where
             }
             Some(ans)
         }
+    }
+}
+
+impl<T> PartialEq<Set<T>> for Set<T>
+where
+    T: Eq + std::hash::Hash,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.set == other.set
+    }
+}
+
+#[cfg(test)]
+mod tests_set {
+    use crate::set::Set;
+    use std::collections::HashSet;
+
+    #[test]
+    fn for_set_sub() {
+        let set1: HashSet<_> = [4, 5, 6, 7].iter().cloned().collect();
+        let set2: HashSet<_> = [1, 2, 3, 4, 5].iter().cloned().collect();
+        let set1 = Set::new(set1);
+        let set2 = Set::new(set2);
+        assert_eq!(&set1 - &set2, Set::new([6, 7].iter().cloned().collect()));
+    }
+
+    #[test]
+    fn for_set_min() {
+        let set: HashSet<_> = [1, 2, 3, 4, 5].iter().cloned().collect();
+        let set = Set::new(set);
+        assert_eq!(set.min(), Some(1));
     }
 }
