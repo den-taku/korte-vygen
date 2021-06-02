@@ -66,5 +66,5 @@ fn main() {
     println!("{:?}", sequence1.extract_with_range(7..8));
 
     println!("Path Enumeration Algorithm: ");
-    path_enumeration_algorithm(4, |set| println!("{:?}", set));
+    path_enumeration_algorithm(4, |set| println!("{:?}", set.to_vec().as_slice()));
 }

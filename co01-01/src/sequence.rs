@@ -31,6 +31,15 @@ where
     }
 }
 
+impl<T> SequencialSet<T> 
+where
+    T: Clone
+{
+    pub fn to_vec(&self) -> Vec<T> {
+        self.sequence.clone()
+    }
+}
+
 impl<T> SequencialSet<T>
 where
     T: std::cmp::Eq + std::hash::Hash + Copy,
